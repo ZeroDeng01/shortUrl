@@ -1,0 +1,122 @@
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>Short Url | 短网址 - ZeroDeng</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <link rel="stylesheet" th:href="@{../assets/css/amazeui.min.css}"/>
+    <link rel="stylesheet" th:href="@{../assets/css/app.css}">
+    <style>
+        .header {
+            text-align: center;
+        }
+        .header h1 {
+            font-size: 200%;
+            color: #333;
+            margin-top: 30px;
+        }
+        .header p {
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+<div class="header">
+    <div class="am-g">
+        <h1>短网址</h1>
+        <p>提供网址缩短服务</p>
+    </div>
+    <hr />
+</div>
+
+<div class="am-g">
+    <div class="col-lg-6 col-md-8 col-sm-centered">
+        <div class="am-tabs"  data-am-tabs="{noSwipe: 1}">
+            <ul class="am-tabs-nav am-nav am-nav-tabs">
+                <li class="am-active"><a href="javascript: void(0)">缩短网址</a></li>
+                <li><a href="javascript: void(0)">还原网址</a></li>
+            </ul>
+            <div class="am-tabs-bd">
+                <div class="am-tab-panel am-active">
+                        <form method="post" class="am-form" action="/form/getUrl">
+                            <div  id="MakeShort_LongUrl_div" class="am-form-group">
+                                <label class="am-form-label" >原网址:</label>
+                                <input type="hidden" id = "CheckLongUrlHiddent" th:name="CheckLongUrlHiddent" value="false">
+                                <input type="text"  id="MakeShort_LongUrl" th:name="MakeShort_LongUrl" onchange="checkUrl(this)" th:value="${url}" class="am-form-field" placeholder="请输入待缩短网址" />
+                            </div>
+                            <label class="am-form-label" >短网址:</label>
+                            <pre th:text="${shortUrl}"></pre>
+                            <br>
+                            <div class="am-cf">
+                                <input type="submit" value="缩短网址" class="am-btn am-btn-primary am-btn-sm am-fl">
+                            </div>
+                        </form>
+                </div>
+                <div class="am-tab-panel">
+                    <form method="post" class="am-form">
+                        <div  id="MakeLong_ShortUrl_div" class="am-form-group">
+                            <label class="am-form-label" >短网址:</label>
+                            <input type="text" name="" id="MakeLong_ShortUrl" onchange="checkUrl(this)" value="" class="am-form-field"  placeholder="请输入待还原短网址">
+                        </div>
+                        <label class="am-form-label" >原网址:</label>
+                        <pre th:text="${shortUrl}"></pre>
+                        <br>
+                        <div class="am-cf">
+                            <input type="submit" name="" disabled value="还原网址" class="am-btn am-btn-primary am-btn-sm am-fl">
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    <footer class="am-margin-top">
+        <hr>
+        <div class="am-btn-group">
+            <a href="https://github.com/zerodeng01" class="am-btn am-btn-secondary am-btn-sm"><i class="am-icon-github am-icon-sm"></i> Github</a>
+            <!--a href="#" class="am-btn am-btn-success am-btn-sm"><i class="am-icon-google-plus-square am-icon-sm"></i> Google+</a>
+            <a href="#" class="am-btn am-btn-primary am-btn-sm"><i class="am-icon-stack-overflow am-icon-sm"></i> stackOverflow</a-->
+        </div>
+        <hr/>
+        <p class="am-text-center">Powered by <a href="http://www.zerodeng.com">ZeroDeng</a></p>
+    </footer>
+</div>
+<input type="hidden" id="serverCode" name="serverCode" th:value="${code}">
+<input type="hidden" id="serverMsg" name="serverMsg" th:value="${msg}">
+<!--[if lt IE 9]>
+<script src="http://libs.baidu.com/jquery/1.11.1/jquery.min.js"></script>
+<script src="http://cdn.staticfile.org/modernizr/2.8.3/modernizr.js"></script>
+<![endif]-->
+
+
+<script th:src="@{../assets/js/zepto.min.js?1.1.4}"></script>
+<script th:src="@{../assets/js/amazeui.js}"></script>
+<script th:src="@{../assets/js/app.js}"></script>
+    <script type="text/javascript">
+
+        $(document).ready(function() {
+            if(document.getElementById("serverCode").value!=0){
+                alert(document.getElementById("serverMsg").value)
+            }
+        });
+        function checkUrl(url){
+            var urlString = url.value;
+            if(urlString!=""){
+                var reg=/(http|ftp|https):\/\/[\w\-_]+(\.[\w\-_]+)+([\w\-\.,@?^=%&:/~\+#]*[\w\-\@?^=%&/~\+#])?/;
+                if(!reg.test(urlString)){
+                    document.getElementById(url.id+"_div").setAttribute("class","am-form-group am-form-error am-form-icon am-form-feedback")
+                    return false;
+                }else{
+                    document.getElementById(url.id+"_div").setAttribute("class","am-form-group am-form-success am-form-icon am-form-feedback")
+                    return true;
+                }
+            }else{
+                document.getElementById(url.id+"_div").setAttribute("class","am-form-group am-form-error am-form-icon am-form-feedback")
+                return false;
+            }
+        }
+
+    </script>
+</body>
+</html>
