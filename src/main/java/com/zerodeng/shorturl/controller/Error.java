@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class Error implements ErrorController {
     @Override
     public String getErrorPath() {
-        return "index";
+        return "redirect:/";
     }
 
     @RequestMapping

@@ -36,36 +36,50 @@
     <div class="col-lg-6 col-md-8 col-sm-centered">
         <div class="am-tabs"  data-am-tabs="{noSwipe: 1}">
             <ul class="am-tabs-nav am-nav am-nav-tabs">
-                <li class="am-active"><a href="javascript: void(0)">缩短网址</a></li>
-                <li><a href="javascript: void(0)">还原网址</a></li>
+                <li th:class="${DefaultActive}"><a href="javascript: void(0)">缩短网址</a></li>
+                <li th:class="${CustomActive}"><a href="javascript: void(0)">自定义短网址</a></li>
             </ul>
             <div class="am-tabs-bd">
-                <div class="am-tab-panel am-active">
+                <div th:class="${DefaultPanelActive}">
                         <form method="post" class="am-form" action="/form/getUrl">
                             <div  id="MakeShort_LongUrl_div" class="am-form-group">
                                 <label class="am-form-label" >原网址:</label>
-                                <input type="hidden" id = "CheckLongUrlHiddent" th:name="CheckLongUrlHiddent" value="false">
                                 <input type="text"  id="MakeShort_LongUrl" th:name="MakeShort_LongUrl" onchange="checkUrl(this)" th:value="${url}" class="am-form-field" placeholder="请输入待缩短网址" />
                             </div>
                             <label class="am-form-label" >短网址:</label>
-                            <pre th:text="${shortUrl}"></pre>
+                            <div class="am-fr">
+                                <div class="am-input-group am-input-group-sm">
+                                    <span class="am-input-group-btn">
+                                      <button class="am-btn am-btn-default" type="button" th:text="${domain}"></button>
+                                    </span>
+                                    <input type="text" class="am-form-field" th:value="${shortCode}">
+                                </div>
+                                <br>
+                            </div>
                             <br>
                             <div class="am-cf">
                                 <input type="submit" value="缩短网址" class="am-btn am-btn-primary am-btn-sm am-fl">
                             </div>
                         </form>
                 </div>
-                <div class="am-tab-panel">
-                    <form method="post" class="am-form">
-                        <div  id="MakeLong_ShortUrl_div" class="am-form-group">
-                            <label class="am-form-label" >短网址:</label>
-                            <input type="text" name="" id="MakeLong_ShortUrl" onchange="checkUrl(this)" value="" class="am-form-field"  placeholder="请输入待还原短网址">
+                <div th:class="${CustomPanelActive}">
+                    <form method="post" class="am-form" action="/form/getUrlCustom">
+                        <div  id="MakeLong_ShortUrlCustom_div" class="am-form-group">
+                            <label class="am-form-label" >原网址:</label>
+                            <input type="text"  id="MakeShort_LongUrlCustom" th:name="MakeShort_LongUrlCustom" onchange="checkUrl(this)" th:value="${urlCustom}" class="am-form-field" placeholder="请输入待缩短网址" />
                         </div>
-                        <label class="am-form-label" >原网址:</label>
-                        <pre th:text="${shortUrl}"></pre>
-                        <br>
+                        <label class="am-form-label" >自定义短网址:</label>
+                        <div class="am-fr">
+                            <div class="am-input-group am-input-group-sm">
+                                    <span class="am-input-group-btn">
+                                      <button class="am-btn am-btn-default" type="button" th:text="${domain}"></button>
+                                    </span>
+                                <input type="text" class="am-form-field" th:name="ShortCodeCustom" th:value="${shortCodeCustom}">
+                            </div>
+                            <br>
+                        </div>
                         <div class="am-cf">
-                            <input type="submit" name="" disabled value="还原网址" class="am-btn am-btn-primary am-btn-sm am-fl">
+                            <input type="submit" value="缩短网址" class="am-btn am-btn-primary am-btn-sm am-fl">
                         </div>
                     </form>
                 </div>
@@ -93,11 +107,18 @@
 <script th:src="@{../assets/js/zepto.min.js?1.1.4}"></script>
 <script th:src="@{../assets/js/amazeui.js}"></script>
 <script th:src="@{../assets/js/app.js}"></script>
+<script th:src="@{../layer/jquery-3.4.1.min.js}"></script>
+<script th:src="@{../layer/layer.js}"></script>
     <script type="text/javascript">
-
         $(document).ready(function() {
-            if(document.getElementById("serverCode").value!=0){
-                alert(document.getElementById("serverMsg").value)
+            var code = document.getElementById("serverCode").value;
+            var msg = document.getElementById("serverMsg").value;
+            if(code.length>0){
+                if(code!=0){
+                    layer.msg(msg, {icon: 2});
+                }else {
+                    layer.msg(msg, {icon: 1});
+                }
             }
         });
         function checkUrl(url){

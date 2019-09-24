@@ -31,6 +31,21 @@ public class ShortUrlController {
     @Autowired
     private ShortUrlMapper shortUrlMapper;
 
+
+    @RequestMapping("/")
+    public String index(HttpServletRequest request,Model model){
+        model.addAttribute("DefaultPanelActive","am-tab-panel am-active");
+        model.addAttribute("CustomPanelActive","am-tab-panel");
+        model.addAttribute("DefaultActive","am-active");
+        model.addAttribute("CustomActive","");
+        if(request.getServerPort()==80||request.getServerPort()==443){
+            model.addAttribute("domain",request.getScheme()+"://"+request.getServerName()+"/");
+        }else{
+            model.addAttribute("domain",request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+"/");
+        }
+        return "index";
+    }
+
     /**
     * @Author ZeroDeng
     * @Description TODO 页面跳转
@@ -74,7 +89,11 @@ public class ShortUrlController {
         map.put("code",0);
         map.put("msg","success");
         int id = shortUrlEntity.getId();
-        String shortCode = ConversionUtil.encode(id+1000000000);
+        int newId = id+1000000000;
+        String shortCode = ConversionUtil.encode(newId);
+        if(shortUrlMapper.getOneForShortCode(shortCode)!=null){
+            shortCode = ConversionUtil.encode(newId+1);
+        }
         shortUrlEntity.setShort_code(shortCode);
         shortUrlMapper.update(shortUrlEntity);
         map.put("shortCode",shortCode);
@@ -86,6 +105,15 @@ public class ShortUrlController {
 
     @RequestMapping(value = "/form/getUrl",method = RequestMethod.POST)
     public String getShortUrlForm(HttpServletRequest request, @RequestParam("MakeShort_LongUrl") String Url , Model model){
+        model.addAttribute("DefaultPanelActive","am-tab-panel am-active");
+        model.addAttribute("CustomPanelActive","am-tab-panel");
+        model.addAttribute("DefaultActive","am-active");
+        model.addAttribute("CustomActive","");
+        if(request.getServerPort()==80||request.getServerPort()==443){
+            model.addAttribute("domain",request.getScheme()+"://"+request.getServerName()+"/");
+        }else{
+            model.addAttribute("domain",request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+"/");
+        }
         if(Url.isEmpty()){
             model.addAttribute("code",1001);
             model.addAttribute("msg","域名为空");
@@ -100,7 +128,6 @@ public class ShortUrlController {
         shortUrlEntity.setUrl(Url);
         shortUrlEntity.setCreate_time(new Date());
         int insRow = shortUrlMapper.insert(shortUrlEntity);
-        Map<String,Object> map = new HashMap<String,Object>();
         if(insRow<=0){
             model.addAttribute("code",5001);
             model.addAttribute("msg","插入失败");
@@ -109,19 +136,64 @@ public class ShortUrlController {
         model.addAttribute("code",0);
         model.addAttribute("msg","success");
         int id = shortUrlEntity.getId();
-        String shortCode = ConversionUtil.encode(id+1000000000);
+        int newId = id+1000000000;
+        String shortCode = ConversionUtil.encode(newId);
+        if(shortUrlMapper.getOneForShortCode(shortCode)!=null){
+            shortCode = ConversionUtil.encode(newId+1);
+        }
         shortUrlEntity.setShort_code(shortCode);
         shortUrlMapper.update(shortUrlEntity);
         model.addAttribute("shortCode",shortCode);
         model.addAttribute("url",Url);
-        if(request.getServerPort()==80||request.getServerPort()==443){
-            model.addAttribute("shortUrl",request.getScheme()+"://"+request.getServerName()+"/"+shortCode);
-        }else{
-            model.addAttribute("shortUrl",request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+"/"+shortCode);
-        }
-        model.addAttribute("url",Url);
         return "index";
     }
 
+    @RequestMapping(value = "/form/getUrlCustom",method = RequestMethod.POST)
+    public String getShortUrlFormCustom(HttpServletRequest request, @RequestParam("MakeShort_LongUrlCustom") String Url ,@RequestParam("ShortCodeCustom") String ShortCode, Model model){
+        model.addAttribute("DefaultPanelActive","am-tab-panel");
+        model.addAttribute("CustomPanelActive","am-tab-panel am-active");
+        model.addAttribute("DefaultActive","");
+        model.addAttribute("CustomActive","am-active");
+        if(request.getServerPort()==80||request.getServerPort()==443){
+            model.addAttribute("domain",request.getScheme()+"://"+request.getServerName()+"/");
+        }else{
+            model.addAttribute("domain",request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+"/");
+        }
+        if(Url.isEmpty()){
+            model.addAttribute("code",1001);
+            model.addAttribute("msg","域名为空");
+            return "index";
+        }
+        if(!Common.isHttpUrl(Url)){
+            model.addAttribute("code",1002);
+            model.addAttribute("msg","域名格式不正确");
+            return "index";
+        }
+        if(ShortCode.isEmpty()){
+            model.addAttribute("code",1003);
+            model.addAttribute("msg","自定义短域名为空");
+            return "index";
+        }
+        if(shortUrlMapper.getOneForShortCode(ShortCode)!=null){
+            model.addAttribute("code",1004);
+            model.addAttribute("msg","自定义短域名已存在");
+            return "index";
+        }
+        ShortUrlEntity shortUrlEntity = new ShortUrlEntity();
+        shortUrlEntity.setUrl(Url);
+        shortUrlEntity.setCreate_time(new Date());
+        shortUrlEntity.setShort_code(ShortCode);
+        int insRow = shortUrlMapper.insert(shortUrlEntity);
+        if(insRow<=0){
+            model.addAttribute("code",5001);
+            model.addAttribute("msg","插入失败");
+            return "index";
+        }
+        model.addAttribute("code",0);
+        model.addAttribute("msg","success");
+        model.addAttribute("shortCodeCustom",ShortCode);
+        model.addAttribute("urlCustom",Url);
+        return "index";
+    }
 
 }
