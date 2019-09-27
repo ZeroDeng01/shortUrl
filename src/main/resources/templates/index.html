@@ -46,15 +46,26 @@
                                 <label class="am-form-label" >原网址:</label>
                                 <input type="text"  id="MakeShort_LongUrl" th:name="MakeShort_LongUrl" onchange="checkUrl(this)" th:value="${url}" class="am-form-field" placeholder="请输入待缩短网址" />
                             </div>
-                            <label class="am-form-label" >短网址:</label>
-                            <div class="am-fr">
-                                <div class="am-input-group am-input-group-sm">
-                                    <span class="am-input-group-btn">
-                                      <button class="am-btn am-btn-default" type="button" th:text="${domain}"></button>
-                                    </span>
-                                    <input type="text" class="am-form-field" th:value="${shortCode}">
+
+                            <div class="am-form-group">
+                                <label class="am-form-label" >验证码:</label>
+                                <div class="am-g">
+                                    <div class="col-md-9 col-md-push-3 col-lg-reset-order"> <input type="text" th:name="MakeShort_LongUrl_Captcha" class="am-form-field"></div>
+                                    <div class="col-md-3 col-md-pull-9 col-lg-reset-order"><img src="/Kaptcha" alt="验证码,点击切换" style="width: 100%" title="验证码,点击切换"  onclick="refresh(this)"></div>
                                 </div>
-                                <br>
+                            </div>
+
+                            <div class="am-form-group">
+                                <label class="am-form-label" >短网址:</label>
+                                <div class="am-fr">
+                                    <div class="am-input-group am-input-group-sm">
+                                        <span class="am-input-group-btn">
+                                          <button class="am-btn am-btn-default" type="button" th:text="${domain}"></button>
+                                        </span>
+                                        <input type="text" class="am-form-field" th:value="${shortCode}">
+                                    </div>
+                                    <br>
+                                </div>
                             </div>
                             <br>
                             <div class="am-cf">
@@ -68,16 +79,30 @@
                             <label class="am-form-label" >原网址:</label>
                             <input type="text"  id="MakeShort_LongUrlCustom" th:name="MakeShort_LongUrlCustom" onchange="checkUrl(this)" th:value="${urlCustom}" class="am-form-field" placeholder="请输入待缩短网址" />
                         </div>
-                        <label class="am-form-label" >自定义短网址:</label>
-                        <div class="am-fr">
-                            <div class="am-input-group am-input-group-sm">
-                                    <span class="am-input-group-btn">
-                                      <button class="am-btn am-btn-default" type="button" th:text="${domain}"></button>
-                                    </span>
-                                <input type="text" class="am-form-field" th:name="ShortCodeCustom" th:value="${shortCodeCustom}">
+
+                        <div class="am-form-group">
+                            <label class="am-form-label" >自定义短网址:</label>
+                            <div class="am-fr">
+                                <div class="am-input-group am-input-group-sm">
+                                        <span class="am-input-group-btn">
+                                          <button class="am-btn am-btn-default" type="button" th:text="${domain}"></button>
+                                        </span>
+                                    <input type="text" class="am-form-field" th:name="ShortCodeCustom" th:value="${shortCodeCustom}">
+                                </div>
+                                <br>
                             </div>
-                            <br>
                         </div>
+
+
+                        <div class="am-form-group">
+                            <label class="am-form-label" >验证码:</label>
+                            <div class="am-g">
+                                <div class="col-md-9 col-md-push-3 col-lg-reset-order"> <input type="text" th:name="MakeShort_LongUrl_CaptchaCustom" class="am-form-field"></div>
+                                <div class="col-md-3 col-md-pull-9 col-lg-reset-order"><img src="/Kaptcha" alt="验证码,点击切换" style="width: 100%" title="验证码,点击切换"  onclick="refresh(this)"></div>
+                            </div>
+                        </div>
+
+
                         <div class="am-cf">
                             <input type="submit" value="缩短网址" class="am-btn am-btn-primary am-btn-sm am-fl">
                         </div>
@@ -121,6 +146,9 @@
                 }
             }
         });
+        function refresh(img) {
+           img.src="/Kaptcha?"+Math.random();
+        }
         function checkUrl(url){
             var urlString = url.value;
             if(urlString!=""){
